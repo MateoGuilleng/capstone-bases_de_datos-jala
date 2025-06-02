@@ -38,25 +38,19 @@ export default function UsuariosPage() {
     if (pais) params.append('pais', pais);
     if (privacidad) params.append('privacidad', privacidad);
     if (minResenas) params.append('minResenas', minResenas);
+    if (orden) params.append('orden', orden);
     // Fetch con filtros
     fetch(`/api/usuarios?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
-        setUsuarios(data);
+        setUsuarios(data.users);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(err => {
         setError('Error al cargar los usuarios');
         setLoading(false);
       });
-    // Construir SQL
-    let sql = `SELECT U.ID_Usuario, U.NombreUsuario, U.NombreCompleto, U.Pais, U.Privacidad,\n  COUNT(DISTINCT R.ID_Resena) AS TotalResenas,\n  AVG(R.Puntuacion) AS PromedioPuntuacion\nFROM Usuarios U\nLEFT JOIN Resenas R ON U.ID_Usuario = R.ID_Usuario\nWHERE 1=1`;
-    if (pais) sql += `\n  AND U.Pais = '${pais}'`;
-    if (privacidad) sql += `\n  AND U.Privacidad = '${privacidad}'`;
-    sql += `\nGROUP BY U.ID_Usuario`;
-    if (minResenas) sql += `\nHAVING TotalResenas >= ${minResenas}`;
-    sql += `\nORDER BY ${orden.replace(' ', ' ')};`;
-    setSql(sql);
   };
 
   const limpiarFiltros = () => {
@@ -64,12 +58,13 @@ export default function UsuariosPage() {
     setPrivacidad('');
     setMinResenas('');
     setOrden(ORDENES[0].value);
-    setSql('');
+    setSql(''); // Clear SQL on filter clear
     setLoading(true);
     fetch('/api/usuarios')
       .then(res => res.json())
       .then(data => {
-        setUsuarios(data);
+        setUsuarios(data.users);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -81,7 +76,8 @@ export default function UsuariosPage() {
     fetch('/api/usuarios')
       .then(res => res.json())
       .then(data => {
-        setUsuarios(data);
+        setUsuarios(data.users);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -95,13 +91,13 @@ export default function UsuariosPage() {
         <div>
           <label className="block text-sm font-medium mb-1">País</label>
           <select className="w-full rounded p-2" value={pais} onChange={e => setPais(e.target.value)}>
-            {PAISES.map(p => <option key={p} value={p}>{p || 'Todos'}</option>)}
+            {PAISES.map(p => <option className='text-black' key={p} value={p}>{p || 'Todos'}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Privacidad</label>
           <select className="w-full rounded p-2" value={privacidad} onChange={e => setPrivacidad(e.target.value)}>
-            {PRIVACIDADES.map(p => <option key={p} value={p}>{p ? p.charAt(0).toUpperCase() + p.slice(1) : 'Todas'}</option>)}
+            {PRIVACIDADES.map(p => <option className='text-black' key={p} value={p}>{p ? p.charAt(0).toUpperCase() + p.slice(1) : 'Todas'}</option>)}
           </select>
         </div>
         <div>
@@ -111,7 +107,7 @@ export default function UsuariosPage() {
         <div className="md:col-span-2 lg:col-span-1">
           <label className="block text-sm font-medium mb-1">Ordenar por</label>
           <select className="w-full rounded p-2" value={orden} onChange={e => setOrden(e.target.value)}>
-            {ORDENES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {ORDENES.map(o => <option className='text-black' key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div className="col-span-full flex justify-end gap-2">

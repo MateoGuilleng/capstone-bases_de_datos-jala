@@ -33,35 +33,32 @@ export default function GruposPage() {
     const params = new URLSearchParams();
     if (privacidad) params.append('privacidad', privacidad);
     if (minMiembros) params.append('minMiembros', minMiembros);
+    if (orden) params.append('orden', orden);
     // Fetch con filtros
     fetch(`/api/grupos?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
-        setGrupos(data);
+        setGrupos(data.groups);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(err => {
         setError('Error al cargar los grupos');
         setLoading(false);
       });
-    // Construir SQL
-    let sql = `SELECT G.ID_Grupo, G.Nombre, G.Descripcion, G.Privacidad, G.Miembros, G.FechaCreacion, U.NombreUsuario AS Creador\nFROM Grupos G\nJOIN Usuarios U ON G.ID_Creador = U.ID_Usuario\nWHERE 1=1`;
-    if (privacidad) sql += `\n  AND G.Privacidad = '${privacidad}'`;
-    if (minMiembros) sql += `\n  AND G.Miembros >= ${minMiembros}`;
-    sql += `\nORDER BY ${orden.replace(' ', ' ')};`;
-    setSql(sql);
   };
 
   const limpiarFiltros = () => {
     setPrivacidad('');
     setMinMiembros('');
     setOrden(ORDENES[0].value);
-    setSql('');
+    setSql(''); // Clear SQL on filter clear
     setLoading(true);
     fetch('/api/grupos')
       .then(res => res.json())
       .then(data => {
-        setGrupos(data);
+        setGrupos(data.groups);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -73,7 +70,8 @@ export default function GruposPage() {
     fetch('/api/grupos')
       .then(res => res.json())
       .then(data => {
-        setGrupos(data);
+        setGrupos(data.groups);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -87,7 +85,7 @@ export default function GruposPage() {
         <div>
           <label className="block text-sm font-medium mb-1">Privacidad</label>
           <select className="w-full rounded p-2" value={privacidad} onChange={e => setPrivacidad(e.target.value)}>
-            {PRIVACIDADES.map(p => <option key={p} value={p}>{p ? p.charAt(0).toUpperCase() + p.slice(1) : 'Todas'}</option>)}
+            {PRIVACIDADES.map(p => <option className='text-black' key={p} value={p}>{p ? p.charAt(0).toUpperCase() + p.slice(1) : 'Todas'}</option>)}
           </select>
         </div>
         <div>
@@ -97,7 +95,7 @@ export default function GruposPage() {
         <div className="md:col-span-2 lg:col-span-1">
           <label className="block text-sm font-medium mb-1">Ordenar por</label>
           <select className="w-full rounded p-2" value={orden} onChange={e => setOrden(e.target.value)}>
-            {ORDENES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {ORDENES.map(o => <option className='text-black' key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div className="col-span-full flex justify-end gap-2">

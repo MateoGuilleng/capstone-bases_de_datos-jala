@@ -6,6 +6,7 @@ export async function GET(req) {
   const pais = searchParams.get('pais');
   const privacidad = searchParams.get('privacidad');
   const minResenas = searchParams.get('minResenas');
+  const orden = searchParams.get('orden');
 
   let query = `
     SELECT U.ID_Usuario, U.NombreUsuario, U.NombreCompleto, U.Pais, U.Privacidad,
@@ -29,7 +30,21 @@ export async function GET(req) {
     query += ' HAVING TotalResenas >= ?';
     params.push(minResenas);
   }
-  query += ' ORDER BY TotalResenas DESC, U.NombreUsuario ASC';
+  if (orden) {
+    const validOrders = [
+      'TotalResenas DESC', 'TotalResenas ASC',
+      'PromedioPuntuacion DESC', 'PromedioPuntuacion ASC',
+      'NombreUsuario ASC', 'NombreUsuario DESC',
+    ];
+    if (validOrders.includes(orden)) {
+      query += ` ORDER BY ${orden}`;
+    } else {
+      query += ' ORDER BY TotalResenas DESC, U.NombreUsuario ASC';
+    }
+  } else {
+    query += ' ORDER BY TotalResenas DESC, U.NombreUsuario ASC';
+  }
   const [rows] = await db.execute(query, params);
-  return Response.json(rows);
+  const fullQuery = db.format(query, params);
+  return Response.json({ users: rows, sql: fullQuery });
 } 

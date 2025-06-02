@@ -40,6 +40,9 @@ export default function RootLayout({ children }) {
             <li>
               <Link href="/grupos" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Grupos</Link>
             </li>
+            <li>
+              <Link href="/relations" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Relaciones de BD</Link>
+            </li>
           </ul>
         </nav>
         {/* Contenido principal */}

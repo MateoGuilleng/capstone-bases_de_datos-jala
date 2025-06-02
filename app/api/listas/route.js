@@ -6,6 +6,7 @@ export async function GET(req) {
   const tipo = searchParams.get('tipo');
   const visibilidad = searchParams.get('visibilidad');
   const usuario = searchParams.get('usuario');
+  const orden = searchParams.get('orden');
 
   let query = `
     SELECT L.ID_Lista, L.Titulo, L.Descripcion, L.Tipo, L.Visibilidad, L.NumElementos, L.Seguidores,
@@ -27,7 +28,21 @@ export async function GET(req) {
     query += ' AND U.NombreUsuario = ?';
     params.push(usuario);
   }
-  query += ' ORDER BY L.FechaCreacion DESC, L.Titulo ASC';
+  if (orden) {
+    const validOrders = [
+      'FechaCreacion DESC', 'FechaCreacion ASC',
+      'Titulo ASC', 'Titulo DESC',
+      'Seguidores DESC', 'Seguidores ASC',
+    ];
+    if (validOrders.includes(orden)) {
+      query += ` ORDER BY ${orden}`;
+    } else {
+      query += ' ORDER BY L.FechaCreacion DESC, L.Titulo ASC';
+    }
+  } else {
+    query += ' ORDER BY L.FechaCreacion DESC, L.Titulo ASC';
+  }
   const [rows] = await db.execute(query, params);
-  return Response.json(rows);
+  const fullQuery = db.format(query, params);
+  return Response.json({ lists: rows, sql: fullQuery });
 } 

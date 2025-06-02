@@ -51,6 +51,13 @@ export default function GrupoDetallePage() {
           <pre className="whitespace-pre-wrap mt-2">{sql.grupo}</pre>
         </div>
       )}
+      {/* SQL generado para miembros */}
+      {sql?.miembros && (
+        <div className="mb-6 bg-gray-100 dark:bg-zinc-900 p-4 rounded text-xs font-mono text-gray-700 dark:text-gray-200">
+          <span className="font-bold text-blue-700 dark:text-blue-400">SQL MIEMBROS USADO:</span>
+          <pre className="whitespace-pre-wrap mt-2">{sql.miembros}</pre>
+        </div>
+      )}
       {/* Miembros del grupo */}
       <section>
         <h2 className="text-2xl font-bold mb-4 text-blue-600">Miembros del grupo</h2>

@@ -8,6 +8,7 @@ export async function GET(req) {
   const genero = searchParams.get('genero');
   const plataforma = searchParams.get('plataforma');
   const popularidad = searchParams.get('popularidad');
+  const orden = searchParams.get('orden');
 
   let query = `
     SELECT C.ID_Contenido, C.Titulo, C.Tipo, C.Ano, C.Clasificacion, C.Popularidad,
@@ -41,7 +42,25 @@ export async function GET(req) {
     query += ' AND C.Popularidad >= ?';
     params.push(popularidad);
   }
-  query += ' GROUP BY C.ID_Contenido ORDER BY C.Popularidad DESC, C.Titulo ASC';
+  query += ' GROUP BY C.ID_Contenido';
+  if (orden) {
+    // Ensure the order parameter is safe to use in SQL
+    const validOrders = [
+      'Popularidad DESC', 'Popularidad ASC',
+      'Ano DESC', 'Ano ASC',
+      'Titulo ASC', 'Titulo DESC',
+    ];
+    if (validOrders.includes(orden)) {
+      query += ` ORDER BY ${orden}`;
+    } else {
+      // Default order if an invalid one is provided
+      query += ' ORDER BY C.Popularidad DESC, C.Titulo ASC';
+    }
+  } else {
+    // Default order if no order parameter is provided
+    query += ' ORDER BY C.Popularidad DESC, C.Titulo ASC';
+  }
   const [rows] = await db.execute(query, params);
-  return Response.json(rows);
+  const fullQuery = db.format(query, params);
+  return Response.json({ contents: rows, sql: fullQuery });
 } 

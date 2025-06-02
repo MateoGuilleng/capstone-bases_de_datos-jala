@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
 export default function ContenidoDetallePage() {
@@ -47,6 +48,28 @@ export default function ContenidoDetallePage() {
         <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
           <strong>Plataformas:</strong> {plataformas?.join(', ') || 'N/A'}
         </div>
+      </div>
+      {/* Sección de Reseñas */}
+      <div>
+        <h2 className="text-2xl font-semibold mt-8 mb-4 text-blue-600 dark:text-blue-300">Reseñas</h2>
+        {resenas && resenas.length > 0 ? (
+          <ul className="space-y-4">
+            {resenas.map(resena => (
+              <li key={resena.ID_Resena} className="bg-gray-50 dark:bg-zinc-900 p-4 rounded shadow">
+                <div className="flex items-center justify-between mb-1">
+                  <Link href={`/usuarios/${resena.NombreUsuario}`} className="font-bold text-blue-700 dark:text-blue-400">{resena.NombreUsuario}</Link>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{new Date(resena.FechaPublicacion).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center mb-2">
+                  <span className="text-yellow-500 font-bold mr-2">{resena.Puntuacion}★</span>
+                </div>
+                <p className="text-gray-700 dark:text-gray-200 whitespace-pre-line">{resena.Comentario}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-gray-500 dark:text-gray-400">No hay reseñas para este contenido.</div>
+        )}
       </div>
       {/* SQL generado */}
       {sql?.contenido && (

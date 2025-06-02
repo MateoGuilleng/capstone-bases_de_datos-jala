@@ -45,26 +45,19 @@ export default function ContenidosPage() {
     if (genero) params.append('genero', genero);
     if (plataforma) params.append('plataforma', plataforma);
     if (popularidad) params.append('popularidad', popularidad);
+    if (orden) params.append('orden', orden);
     // Fetch con filtros
     fetch(`/api/contenidos?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
-        setContenidos(data);
+        setContenidos(data.contents);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(err => {
         setError('Error al cargar los contenidos');
         setLoading(false);
       });
-    // Construir SQL
-    let sql = `SELECT C.ID_Contenido, C.Titulo, C.Tipo, C.Ano, C.Clasificacion, C.Popularidad,\n  GROUP_CONCAT(DISTINCT G.Nombre ORDER BY G.Nombre ASC SEPARATOR ', ') AS Generos,\n  GROUP_CONCAT(DISTINCT P.Nombre ORDER BY P.Nombre ASC SEPARATOR ', ') AS Plataformas\nFROM Contenidos C\nLEFT JOIN contenido_genero CG ON C.ID_Contenido = CG.ID_Contenido\nLEFT JOIN generos G ON CG.ID_Genero = G.ID_Genero\nLEFT JOIN contenido_plataforma CP ON C.ID_Contenido = CP.ID_Contenido\nLEFT JOIN plataformas P ON CP.ID_Plataforma = P.ID_Plataforma\nWHERE 1=1`;
-    if (tipo) sql += `\n  AND C.Tipo = '${tipo}'`;
-    if (ano) sql += `\n  AND C.Ano = ${ano}`;
-    if (genero) sql += `\n  AND G.Nombre = '${genero}'`;
-    if (plataforma) sql += `\n  AND P.Nombre = '${plataforma}'`;
-    if (popularidad) sql += `\n  AND C.Popularidad >= ${popularidad}`;
-    sql += `\nGROUP BY C.ID_Contenido\nORDER BY ${orden.replace(' ', ' ')};`;
-    setSql(sql);
   };
 
   const limpiarFiltros = () => {
@@ -74,12 +67,13 @@ export default function ContenidosPage() {
     setPlataforma('');
     setPopularidad('');
     setOrden(ORDENES[0].value);
-    setSql('');
+    setSql(''); // Clear SQL on filter clear
     setLoading(true);
     fetch('/api/contenidos')
       .then(res => res.json())
       .then(data => {
-        setContenidos(data);
+        setContenidos(data.contents);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -91,7 +85,8 @@ export default function ContenidosPage() {
     fetch('/api/contenidos')
       .then(res => res.json())
       .then(data => {
-        setContenidos(data);
+        setContenidos(data.contents);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -105,7 +100,7 @@ export default function ContenidosPage() {
         <div>
           <label className="block text-sm font-medium mb-1">Tipo</label>
           <select className="w-full rounded p-2" value={tipo} onChange={e => setTipo(e.target.value)}>
-            {TIPOS.map(t => <option key={t} value={t}>{t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Todos'}</option>)}
+            {TIPOS.map(t => <option className='text-black' key={t} value={t}>{t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Todos'}</option>)}
           </select>
         </div>
         <div>
@@ -115,13 +110,13 @@ export default function ContenidosPage() {
         <div>
           <label className="block text-sm font-medium mb-1">Género</label>
           <select className="w-full rounded p-2" value={genero} onChange={e => setGenero(e.target.value)}>
-            {GENEROS.map(g => <option key={g} value={g}>{g || 'Todos'}</option>)}
+            {GENEROS.map(g => <option className='text-black' key={g} value={g}>{g || 'Todos'}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Plataforma</label>
           <select className="w-full rounded p-2" value={plataforma} onChange={e => setPlataforma(e.target.value)}>
-            {PLATAFORMAS.map(p => <option key={p} value={p}>{p || 'Todas'}</option>)}
+            {PLATAFORMAS.map(p => <option className='text-black' key={p} value={p}>{p || 'Todas'}</option>)}
           </select>
         </div>
         <div>
@@ -131,7 +126,7 @@ export default function ContenidosPage() {
         <div className="md:col-span-2 lg:col-span-1">
           <label className="block text-sm font-medium mb-1">Ordenar por</label>
           <select className="w-full rounded p-2" value={orden} onChange={e => setOrden(e.target.value)}>
-            {ORDENES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {ORDENES.map(o => <option className='text-black' key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div className="col-span-full flex justify-end gap-2">

@@ -43,20 +43,14 @@ export default function ResenasPage() {
         fetch(`/api/resenas?${params.toString()}`)
             .then(res => res.json())
             .then(data => {
-                setResenas(data);
+                setResenas(data.reviews);
+                setSql(data.sql);
                 setLoading(false);
             })
             .catch(err => {
                 setError('Error al cargar las reseñas');
                 setLoading(false);
             });
-        // Construir SQL
-        let sql = `SELECT R.ID_Resena, U.NombreUsuario, C.Titulo AS Contenido, R.Puntuacion, R.Comentario, R.FechaPublicacion\nFROM Resenas R\nJOIN Usuarios U ON R.ID_Usuario = U.ID_Usuario\nJOIN Contenidos C ON R.ID_Contenido = C.ID_Contenido\nWHERE 1=1`;
-        if (usuario) sql += `\n  AND U.NombreUsuario = '${usuario}'`;
-        if (contenido) sql += `\n  AND C.Titulo = '${contenido}'`;
-        if (minPuntuacion) sql += `\n  AND R.Puntuacion >= ${minPuntuacion}`;
-        sql += `\nORDER BY ${orden.replace(' ', ' ')};`;
-        setSql(sql);
     };
 
     const limpiarFiltros = () => {
@@ -69,7 +63,8 @@ export default function ResenasPage() {
         fetch('/api/resenas')
             .then(res => res.json())
             .then(data => {
-                setResenas(data);
+                setResenas(data.reviews);
+                setSql(data.sql);
                 setLoading(false);
             })
             .catch(() => setLoading(false));
@@ -81,7 +76,8 @@ export default function ResenasPage() {
         fetch('/api/resenas')
             .then(res => res.json())
             .then(data => {
-                setResenas(data);
+                setResenas(data.reviews);
+                setSql(data.sql);
                 setLoading(false);
             })
             .catch(() => setLoading(false));
@@ -95,13 +91,13 @@ export default function ResenasPage() {
                 <div>
                     <label className="block text-sm font-medium mb-1">Usuario</label>
                     <select className="w-full rounded p-2" value={usuario} onChange={e => setUsuario(e.target.value)}>
-                        {USUARIOS.map(u => <option key={u} value={u}>{u || 'Todos'}</option>)}
+                        {USUARIOS.map(u => <option className='text-black' key={u} value={u}>{u || 'Todos'}</option>)}
                     </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Contenido</label>
                     <select className="w-full rounded p-2" value={contenido} onChange={e => setContenido(e.target.value)}>
-                        {CONTENIDOS.map(c => <option key={c} value={c}>{c || 'Todos'}</option>)}
+                        {CONTENIDOS.map(c => <option className='text-black' key={c} value={c}>{c || 'Todos'}</option>)}
                     </select>
                 </div>
                 <div>
@@ -111,7 +107,7 @@ export default function ResenasPage() {
                 <div className="md:col-span-2 lg:col-span-1">
                     <label className="block text-sm font-medium mb-1">Ordenar por</label>
                     <select className="w-full rounded p-2" value={orden} onChange={e => setOrden(e.target.value)}>
-                        {ORDENES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                        {ORDENES.map(o => <option className='text-black' key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                 </div>
                 <div className="col-span-full flex justify-end gap-2">
@@ -145,7 +141,7 @@ export default function ResenasPage() {
                             className="border border-blue-200 dark:border-zinc-700 p-6 rounded-xl shadow bg-white dark:bg-zinc-800 flex flex-col gap-2 hover:shadow-lg transition"
                         >
                             <h2 className="font-semibold text-lg text-blue-700 dark:text-blue-300 mb-1">
-                                <Link href={`/contenidos/${resena.Contenido}`}>{resena.Contenido}</Link>
+                                <Link href={`/contenidos/${resena.ID_Contenido}`}>{resena.Contenido}</Link>
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
                                 por <Link href={`/usuarios/${resena.NombreUsuario}`} className="font-bold text-blue-600 dark:text-blue-300 hover:underline">{resena.NombreUsuario}</Link> | <span className="text-xs">{resena.FechaPublicacion}</span>

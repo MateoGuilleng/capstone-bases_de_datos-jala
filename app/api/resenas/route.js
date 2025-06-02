@@ -12,6 +12,7 @@ export async function GET(req) {
     SELECT 
       R.ID_Resena,
       U.NombreUsuario,
+      C.ID_Contenido,
       C.Titulo AS Contenido,
       R.Puntuacion,
       R.Comentario,
@@ -34,7 +35,19 @@ export async function GET(req) {
     query += ' AND R.Puntuacion >= ?';
     params.push(minPuntuacion);
   }
+
+  // Interpolate parameters into the query string for display purposes
+  let displayQuery = query;
+  params.forEach(param => {
+    if (typeof param === 'string') {
+      displayQuery = displayQuery.replace('?', `'${param}'`);
+    } else {
+      displayQuery = displayQuery.replace('?', param);
+    }
+  });
+
+  displayQuery += ` ORDER BY ${orden}`;
   query += ` ORDER BY ${orden}`;
   const [rows] = await db.execute(query, params);
-  return Response.json(rows);
+  return Response.json({ reviews: rows, sql: displayQuery });
 }

@@ -38,24 +38,19 @@ export default function ListasPage() {
     if (tipo) params.append('tipo', tipo);
     if (visibilidad) params.append('visibilidad', visibilidad);
     if (usuario) params.append('usuario', usuario);
+    if (orden) params.append('orden', orden);
     // Fetch con filtros
     fetch(`/api/listas?${params.toString()}`)
       .then(res => res.json())
       .then(data => {
-        setListas(data);
+        setListas(data.lists);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(err => {
         setError('Error al cargar las listas');
         setLoading(false);
       });
-    // Construir SQL
-    let sql = `SELECT L.ID_Lista, L.Titulo, L.Descripcion, L.Tipo, L.Visibilidad, L.NumElementos, L.Seguidores,\n  U.NombreUsuario\nFROM Listas L\nJOIN Usuarios U ON L.ID_Usuario = U.ID_Usuario\nWHERE 1=1`;
-    if (tipo) sql += `\n  AND L.Tipo = '${tipo}'`;
-    if (visibilidad) sql += `\n  AND L.Visibilidad = '${visibilidad}'`;
-    if (usuario) sql += `\n  AND U.NombreUsuario = '${usuario}'`;
-    sql += `\nORDER BY ${orden.replace(' ', ' ')};`;
-    setSql(sql);
   };
 
   const limpiarFiltros = () => {
@@ -63,12 +58,13 @@ export default function ListasPage() {
     setVisibilidad('');
     setUsuario('');
     setOrden(ORDENES[0].value);
-    setSql('');
+    setSql(''); // Clear SQL on filter clear
     setLoading(true);
     fetch('/api/listas')
       .then(res => res.json())
       .then(data => {
-        setListas(data);
+        setListas(data.lists);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -80,7 +76,8 @@ export default function ListasPage() {
     fetch('/api/listas')
       .then(res => res.json())
       .then(data => {
-        setListas(data);
+        setListas(data.lists);
+        setSql(data.sql);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -94,13 +91,13 @@ export default function ListasPage() {
         <div>
           <label className="block text-sm font-medium mb-1">Tipo</label>
           <select className="w-full rounded p-2" value={tipo} onChange={e => setTipo(e.target.value)}>
-            {TIPOS.map(t => <option key={t} value={t}>{t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Todos'}</option>)}
+            {TIPOS.map(t => <option className='text-black' key={t} value={t}>{t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Todos'}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Visibilidad</label>
           <select className="w-full rounded p-2" value={visibilidad} onChange={e => setVisibilidad(e.target.value)}>
-            {VISIBILIDADES.map(v => <option key={v} value={v}>{v ? v.charAt(0).toUpperCase() + v.slice(1) : 'Todas'}</option>)}
+            {VISIBILIDADES.map(v => <option className='text-black' key={v} value={v}>{v ? v.charAt(0).toUpperCase() + v.slice(1) : 'Todas'}</option>)}
           </select>
         </div>
         <div>
@@ -110,7 +107,7 @@ export default function ListasPage() {
         <div className="md:col-span-2 lg:col-span-1">
           <label className="block text-sm font-medium mb-1">Ordenar por</label>
           <select className="w-full rounded p-2" value={orden} onChange={e => setOrden(e.target.value)}>
-            {ORDENES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {ORDENES.map(o => <option className='text-black' key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div className="col-span-full flex justify-end gap-2">
