@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from 'next/link';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +19,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="es">
+      <body className="bg-gray-100 dark:bg-zinc-900 min-h-screen flex">
+        {/* Menú lateral */}
+        <nav className="w-64 bg-white dark:bg-zinc-800 shadow-lg min-h-screen p-6 flex flex-col gap-6">
+          <h2 ><Link href="/" className="text-xl font-bold mb-8 text-center">Wonder Entertainment</Link></h2>
+          <ul className="flex flex-col gap-4">
+            <li>
+              <Link href="/resenas" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Reseñas</Link>
+            </li>
+            <li>
+              <Link href="/contenidos" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Contenidos</Link>
+            </li>
+            <li>
+              <Link href="/usuarios" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Usuarios</Link>
+            </li>
+            <li>
+              <Link href="/listas" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Listas</Link>
+            </li>
+            <li>
+              <Link href="/grupos" className="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-zinc-700 transition">Grupos</Link>
+            </li>
+          </ul>
+        </nav>
+        {/* Contenido principal */}
+        <main className="flex-1 p-8">{children}</main>
       </body>
     </html>
   );
