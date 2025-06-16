@@ -27,6 +27,12 @@ export default function ContenidosPage() {
   const [error, setError] = useState(null);
   const [sql, setSql] = useState('');
 
+  // Nuevo estado para el Top 10
+  const [top10Contenidos, setTop10Contenidos] = useState([]);
+  const [loadingTop10, setLoadingTop10] = useState(true);
+  const [errorTop10, setErrorTop10] = useState(null);
+  const [sqlTop10, setSqlTop10] = useState('');
+
   // Filtros
   const [tipo, setTipo] = useState('');
   const [ano, setAno] = useState('');
@@ -92,9 +98,61 @@ export default function ContenidosPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  // Cargar Top 10 al inicio
+  useEffect(() => {
+    setLoadingTop10(true);
+    fetch('/api/contenidos/top10')
+      .then(res => res.json())
+      .then(data => {
+        setTop10Contenidos(data.top10);
+        setSqlTop10(data.sql.top10);
+        setLoadingTop10(false);
+      })
+      .catch(err => {
+        setErrorTop10('Error al cargar el Top 10 de contenidos');
+        setLoadingTop10(false);
+      });
+  }, []);
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Contenidos</h1>
+      {/* Sección Top 10 Contenidos */}
+      <section className="mb-10 p-6 bg-white dark:bg-zinc-800 rounded-xl shadow">
+        <h2 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">Top 10 Contenidos Mejor Valorados</h2>
+        {loadingTop10 ? (
+          <div className="text-center">Cargando Top 10...</div>
+        ) : errorTop10 ? (
+          <div className="text-center text-red-500">{errorTop10}</div>
+        ) : top10Contenidos.length === 0 ? (
+          <div className="text-center text-gray-500">No hay contenidos en el Top 10 para mostrar.</div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {top10Contenidos.map((c, index) => (
+              <div
+                key={c.ID_Contenido}
+                className="border border-green-200 dark:border-green-700 p-4 rounded-xl shadow bg-white dark:bg-zinc-800 flex flex-col gap-1 hover:shadow-lg transition"
+              >
+                <h3 className="font-semibold text-lg text-green-700 dark:text-green-300">
+                  {index + 1}. <Link href={`/contenidos/${c.ID_Contenido}`}>{c.Titulo}</Link>
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Tipo: {c.Tipo} | Año: {c.Ano}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Clasificación: {c.Clasificacion || 'N/A'}</p>
+                <p className="text-md font-bold text-blue-700 dark:text-blue-400">Puntuación Promedio: {parseFloat(c.PuntuacionPromedio).toFixed(2)}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* SQL del Top 10 */}
+        {sqlTop10 && (
+          <div className="mt-6 bg-gray-100 dark:bg-zinc-900 p-4 rounded text-xs font-mono text-gray-700 dark:text-gray-200 overflow-x-auto">
+            <span className="font-bold text-blue-700 dark:text-blue-400">SQL para Top 10:</span>
+            <pre className="whitespace-pre-wrap mt-2">{sqlTop10}</pre>
+          </div>
+        )}
+      </section>
+
       {/* Filtros */}
       <form className="mb-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end bg-white dark:bg-zinc-800 p-4 rounded shadow">
         <div>

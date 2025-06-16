@@ -10,22 +10,20 @@ export default function RelationsPage() {
       {/* Sección 1: Relaciones de la Base de Datos */}
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">1. Relaciones de la Base de Datos</h2>
-        <p className="mb-4 text-gray-700 dark:text-gray-200">
-          A continuación se describen las relaciones entre las tablas de la base de datos, especificando su cardinalidad (1:N, N:M, etc.).
-        </p>
+
 
         <div className="space-y-8">
           <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Relaciones Principales</h3>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
             <li><strong>Usuarios (1) → Grupos (N):</strong> Un usuario puede crear múltiples grupos (ID_Creador).</li>
-            <li><strong>Usuarios (N) ↔ Grupos (N):</strong> Relación muchos a muchos a través de la tabla `grupo_usuario`.</li>
+            <li><strong>Usuarios (N) ↔ Grupos (M):</strong> Relación muchos a muchos a través de la tabla `grupo_usuario`.</li>
             <li><strong>Usuarios (1) → Reseñas (N):</strong> Un usuario puede escribir múltiples reseñas.</li>
             <li><strong>Contenidos (1) → Reseñas (N):</strong> Un contenido puede tener múltiples reseñas.</li>
-            <li><strong>Usuarios (N) ↔ Contenidos (N):</strong> Relación muchos a muchos a través de la tabla `seguimiento_contenido`.</li>
-            <li><strong>Contenidos (N) ↔ Plataformas (N):</strong> Relación muchos a muchos a través de la tabla `contenido_plataforma`.</li>
-            <li><strong>Listas (N) ↔ Contenidos (N):</strong> Relación muchos a muchos a través de la tabla `lista_contenido`.</li>
-            <li><strong>Contenidos (N) ↔ Géneros (N):</strong> Relación muchos a muchos a través de la tabla `contenido_genero`.</li>
-            <li><strong>Usuarios (N) ↔ Listas (N):</strong> Relación muchos a muchos a través de la tabla `seguidores_listas`.</li>
+            <li><strong>Usuarios (N) ↔ Contenidos (M):</strong> Relación muchos a muchos a través de la tabla `seguimiento_contenido`.</li>
+            <li><strong>Contenidos (N) ↔ Plataformas (M):</strong> Relación muchos a muchos a través de la tabla `contenido_plataforma`.</li>
+            <li><strong>Listas (N) ↔ Contenidos (M):</strong> Relación muchos a muchos a través de la tabla `lista_contenido`.</li>
+            <li><strong>Contenidos (N) ↔ Géneros (M):</strong> Relación muchos a muchos a través de la tabla `contenido_genero`.</li>
+            <li><strong>Usuarios (N) ↔ Listas (M):</strong> Relación muchos a muchos a través de la tabla `seguidores_listas`.</li>
           </ul>
 
           <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Tablas Intermedias (Junction Tables)</h3>
@@ -40,12 +38,10 @@ export default function RelationsPage() {
         </div>
       </section>
 
-      {/* Sección 2: Normalización */}
+
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">2. Normalización de la Base de Datos</h2>
-        <p className="mb-4 text-gray-700 dark:text-gray-200">
-          La base de datos está diseñada siguiendo los principios de la Tercera Forma Normal (3FN), lo que garantiza la integridad de los datos y elimina la redundancia. A continuación se explica cómo se cumple cada forma normal:
-        </p>
+
 
         <div className="space-y-8">
           <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Primera Forma Normal (1FN)</h3>
@@ -102,12 +98,10 @@ export default function RelationsPage() {
         </div>
       </section>
 
-      {/* Sección 3: Estructura de cada tabla */}
+
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">2. Estructura de Tablas</h2>
-        <p className="mb-4 text-gray-700 dark:text-gray-200">
-          Esta sección detalla la estructura y los campos de cada tabla principal en la base de datos.
-        </p>
+
 
         <div className="space-y-8">
           <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Tabla: `grupos`</h3>
@@ -225,7 +219,7 @@ export default function RelationsPage() {
               Este modelo describe la relación entre los grupos de usuarios y los usuarios individuales, utilizando una tabla intermedia para gestionar la membresía y roles dentro de cada grupo.
             </p>
             <div className="mb-6">
-              <Image src="/grupo_usuario.jpeg" alt="Diagrama de relación Grupos-Usuario" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/grupo_usuario.jpeg" alt="Diagrama de relación Grupos-Usuario" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -235,7 +229,7 @@ export default function RelationsPage() {
               Esta sección detalla la estructura y campos de la tabla de usuarios.
             </p>
             <div className="mb-6">
-              <Image src="/En donde esta usuarios.jpeg" alt="Diagrama de la tabla Usuarios" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/En donde esta usuarios.jpeg" alt="Diagrama de la tabla Usuarios" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -245,7 +239,7 @@ export default function RelationsPage() {
               Este diagrama muestra cómo se relacionan las reseñas con los contenidos y los usuarios.
             </p>
             <div className="mb-6">
-              <Image src="/En donde esta reseñas.jpeg" alt="Diagrama de relación Reseñas-Contenidos-Usuario" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/En donde esta reseñas.jpeg" alt="Diagrama de relación Reseñas-Contenidos-Usuario" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -255,7 +249,7 @@ export default function RelationsPage() {
               Este diagrama presenta la estructura de los contenidos en la plataforma.
             </p>
             <div className="mb-6">
-              <Image src="/En donde esta contenidos.jpeg" alt="Diagrama de la tabla Contenidos" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/En donde esta contenidos.jpeg" alt="Diagrama de la tabla Contenidos" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -265,7 +259,7 @@ export default function RelationsPage() {
               Esta tabla intermedia registra el progreso y estado de los contenidos que los usuarios están siguiendo.
             </p>
             <div className="mb-6">
-              <Image src="/Seguimiendo_contenido.jpeg" alt="Diagrama de relación Seguimiento de Contenido" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/Seguimiendo_contenido.jpeg" alt="Diagrama de relación Seguimiento de Contenido" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -275,7 +269,7 @@ export default function RelationsPage() {
               Esta tabla intermedia asocia contenidos con las plataformas donde están disponibles.
             </p>
             <div className="mb-6">
-              <Image src="/Contenido_plataforma.jpeg" alt="Diagrama de relación Contenido-Plataforma" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/Contenido_plataforma.jpeg" alt="Diagrama de relación Contenido-Plataforma" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -285,7 +279,7 @@ export default function RelationsPage() {
               Esta tabla intermedia vincula contenidos específicos a diferentes listas creadas por los usuarios.
             </p>
             <div className="mb-6">
-              <Image src="/lista_contenido.jpeg" alt="Diagrama de relación Lista-Contenido" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/lista_contenido.jpeg" alt="Diagrama de relación Lista-Contenido" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -295,7 +289,7 @@ export default function RelationsPage() {
               Esta tabla intermedia clasifica los contenidos por uno o varios géneros.
             </p>
             <div className="mb-6">
-              <Image src="/Contenido_genero.jpeg" alt="Diagrama de relación Contenido-Género" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/Contenido_genero.jpeg" alt="Diagrama de relación Contenido-Género" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
 
@@ -305,7 +299,7 @@ export default function RelationsPage() {
               Esta tabla intermedia registra qué usuarios están siguiendo qué listas.
             </p>
             <div className="mb-6">
-              <Image src="/Seguidores_lista.jpeg" alt="Diagrama de relación Seguidores de Lista" width={800} height={400} layout="responsive" className="rounded-lg shadow-md"/>
+              <Image src="/Seguidores_lista.jpeg" alt="Diagrama de relación Seguidores de Lista" width={800} height={400} layout="responsive" className="rounded-lg shadow-md" />
             </div>
           </div>
         </div>
