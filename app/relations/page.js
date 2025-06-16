@@ -11,62 +11,98 @@ export default function RelationsPage() {
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">1. Relaciones de la Base de Datos</h2>
         <p className="mb-4 text-gray-700 dark:text-gray-200">
-          A continuación se describen las relaciones clave entre las diferentes tablas de la base de datos, destacando cómo se conectan y resuelven dependencias.
+          A continuación se describen las relaciones entre las tablas de la base de datos, especificando su cardinalidad (1:N, N:M, etc.).
         </p>
 
         <div className="space-y-8">
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo de Grupos y Usuarios</h3>
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Relaciones Principales</h3>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`grupos` a `grupo_usuario` (Uno a Muchos):</strong> Un grupo puede tener muchos registros en la tabla `grupo_usuario`, cada uno representando un miembro.</li>
-            <li><strong>`usuarios` a `grupo_usuario` (Uno a Muchos):</strong> Un usuario puede pertenecer a muchos grupos, cada membresía registrada en la tabla `grupo_usuario`.</li>
-            <li><strong>`grupo_usuario` (Muchos a Muchos):</strong> La tabla `grupo_usuario` actúa como una tabla intermedia o de unión (Junction Table) para resolver la relación de muchos a muchos entre `grupos` y `usuarios`. Esto significa que un usuario puede ser miembro de múltiples grupos, y un grupo puede tener múltiples miembros.</li>
-            <li><strong>`grupos.ID_Creador` a `usuarios.ID_Usuario` (Uno a Uno/Muchos):</strong> Aunque no se muestra en el diagrama `grupo_usuario.jpeg`, la tabla `grupos` tiene un campo `ID_Creador` que es una clave foránea a `usuarios.ID_Usuario`. Esto indica qué usuario creó el grupo. Esta es una relación uno a muchos desde `usuarios` a `grupos` (un usuario puede crear muchos grupos, pero un grupo solo tiene un creador).</li>
+            <li><strong>Usuarios (1) → Grupos (N):</strong> Un usuario puede crear múltiples grupos (ID_Creador).</li>
+            <li><strong>Usuarios (N) ↔ Grupos (N):</strong> Relación muchos a muchos a través de la tabla `grupo_usuario`.</li>
+            <li><strong>Usuarios (1) → Reseñas (N):</strong> Un usuario puede escribir múltiples reseñas.</li>
+            <li><strong>Contenidos (1) → Reseñas (N):</strong> Un contenido puede tener múltiples reseñas.</li>
+            <li><strong>Usuarios (N) ↔ Contenidos (N):</strong> Relación muchos a muchos a través de la tabla `seguimiento_contenido`.</li>
+            <li><strong>Contenidos (N) ↔ Plataformas (N):</strong> Relación muchos a muchos a través de la tabla `contenido_plataforma`.</li>
+            <li><strong>Listas (N) ↔ Contenidos (N):</strong> Relación muchos a muchos a través de la tabla `lista_contenido`.</li>
+            <li><strong>Contenidos (N) ↔ Géneros (N):</strong> Relación muchos a muchos a través de la tabla `contenido_genero`.</li>
+            <li><strong>Usuarios (N) ↔ Listas (N):</strong> Relación muchos a muchos a través de la tabla `seguidores_listas`.</li>
           </ul>
 
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo de Usuarios</h3>
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Tablas Intermedias (Junction Tables)</h3>
           <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li>La tabla `usuarios` es central y se relaciona con `grupos` (como creador), `grupo_usuario` (como miembro), `resenas` (como autor), `seguimiento_contenido` (como usuario que sigue un contenido), y `comentarios_resenas` (como autor de comentarios/reseñas).</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo de Reseñas</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`resenas` a `contenidos` (Muchos a Uno):</strong> Muchas reseñas pueden referirse a un mismo contenido.</li>
-            <li><strong>`resenas` a `usuarios` (Muchos a Uno):</strong> Muchos usuarios pueden escribir reseñas, y un usuario puede escribir muchas reseñas.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo de Contenidos</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li>La tabla `contenidos` es central y se relaciona con `resenas`, `lista_contenido`, `contenido_genero`, `contenido_plataforma`, y `seguimiento_contenido`.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo de Seguimiento de Contenido</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`seguimiento_contenido` (Muchos a Muchos):</strong> Resuelve la relación muchos a muchos entre `usuarios` y `contenidos`, permitiendo que un usuario siga múltiples contenidos y un contenido sea seguido por múltiples usuarios.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo Contenido-Plataforma</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`contenido_plataforma` (Muchos a Muchos):</strong> Resuelve la relación muchos a muchos entre `contenidos` y `plataformas`. Un contenido puede estar en varias plataformas, y una plataforma puede tener varios contenidos.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo Lista-Contenido</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`lista_contenido` (Muchos a Muchos):</strong> Resuelve la relación muchos a muchos entre `listas` y `contenidos`. Una lista puede contener múltiples contenidos, y un contenido puede aparecer en múltiples listas.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo Contenido-Género</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`contenido_genero` (Muchos a Muchos):</strong> Resuelve la relación muchos a muchos entre `contenidos` y `generos`. Un contenido puede tener varios géneros, y un género puede aplicarse a varios contenidos.</li>
-          </ul>
-
-          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Modelo Seguidores de Lista</h3>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
-            <li><strong>`seguidores_listas` (Muchos a Muchos):</strong> Resuelve la relación muchos a muchos entre `usuarios` y `listas`. Un usuario puede seguir múltiples listas, y una lista puede ser seguida por múltiples usuarios.</li>
+            <li><strong>`grupo_usuario`:</strong> Gestiona la membresía de usuarios en grupos, incluyendo roles y fechas de unión.</li>
+            <li><strong>`seguimiento_contenido`:</strong> Registra el progreso y estado de los contenidos que los usuarios están siguiendo.</li>
+            <li><strong>`contenido_plataforma`:</strong> Asocia contenidos con las plataformas donde están disponibles.</li>
+            <li><strong>`lista_contenido`:</strong> Vincula contenidos a listas con un orden específico.</li>
+            <li><strong>`contenido_genero`:</strong> Clasifica los contenidos por géneros.</li>
+            <li><strong>`seguidores_listas`:</strong> Registra qué usuarios siguen qué listas.</li>
           </ul>
         </div>
       </section>
 
-      {/* Sección 2: Estructura de cada tabla */}
+      {/* Sección 2: Normalización */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">2. Normalización de la Base de Datos</h2>
+        <p className="mb-4 text-gray-700 dark:text-gray-200">
+          La base de datos está diseñada siguiendo los principios de la Tercera Forma Normal (3FN), lo que garantiza la integridad de los datos y elimina la redundancia. A continuación se explica cómo se cumple cada forma normal:
+        </p>
+
+        <div className="space-y-8">
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Primera Forma Normal (1FN)</h3>
+          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
+            <li>Todas las tablas tienen una clave primaria única (ID_Usuario, ID_Grupo, ID_Contenido, etc.).</li>
+            <li>No hay grupos repetitivos en ninguna columna.</li>
+            <li>Los valores en cada columna son atómicos (no divisibles). Por ejemplo:
+              <ul className="list-disc list-inside ml-6 mt-2">
+                <li>En `usuarios`, el nombre y apellido están separados en `NombreUsuario` y `NombreCompleto`.</li>
+                <li>En `contenidos`, la fecha de lanzamiento está en una columna separada (`Ano`).</li>
+                <li>Las relaciones muchos a muchos están correctamente separadas en tablas intermedias.</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Segunda Forma Normal (2FN)</h3>
+          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
+            <li>La base de datos cumple con 1FN.</li>
+            <li>Todos los atributos no clave dependen completamente de la clave primaria. Por ejemplo:
+              <ul className="list-disc list-inside ml-6 mt-2">
+                <li>En `resenas`, todos los campos (Puntuacion, Comentario, FechaPublicacion) dependen completamente de ID_Resena.</li>
+                <li>En `grupo_usuario`, los campos FechaUnion y Rol dependen completamente de la combinación de ID_Grupo y ID_Usuario.</li>
+                <li>Las tablas intermedias como `contenido_plataforma` y `contenido_genero` solo contienen claves foráneas que dependen completamente de sus claves primarias compuestas.</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Tercera Forma Normal (3FN)</h3>
+          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
+            <li>La base de datos cumple con 2FN.</li>
+            <li>No hay dependencias transitivas entre atributos no clave. Por ejemplo:
+              <ul className="list-disc list-inside ml-6 mt-2">
+                <li>En `usuarios`, los campos como NombreUsuario, Email, y FechaNacimiento dependen directamente de ID_Usuario, no de otros atributos no clave.</li>
+                <li>En `contenidos`, los campos como Titulo, Tipo, y Ano dependen directamente de ID_Contenido.</li>
+                <li>Las relaciones muchos a muchos están correctamente normalizadas en tablas separadas, evitando dependencias transitivas.</li>
+              </ul>
+            </li>
+            <li>Las tablas intermedias (como `grupo_usuario`, `seguimiento_contenido`) solo contienen:
+              <ul className="list-disc list-inside ml-6 mt-2">
+                <li>Claves primarias</li>
+                <li>Claves foráneas</li>
+                <li>Atributos que dependen directamente de la clave primaria compuesta</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Beneficios de la Normalización</h3>
+          <ul className="list-disc list-inside text-gray-700 dark:text-gray-200">
+            <li><strong>Integridad de Datos:</strong> La estructura normalizada garantiza que los datos sean consistentes y no haya anomalías en las operaciones de inserción, actualización o eliminación.</li>
+            <li><strong>Eliminación de Redundancia:</strong> Los datos no se repiten innecesariamente, lo que reduce el espacio de almacenamiento y previene inconsistencias.</li>
+            <li><strong>Flexibilidad en Consultas:</strong> La estructura normalizada permite realizar consultas complejas de manera eficiente.</li>
+            <li><strong>Mantenibilidad:</strong> La separación clara de responsabilidades facilita el mantenimiento y la evolución de la base de datos.</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Sección 3: Estructura de cada tabla */}
       <section>
         <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">2. Estructura de Tablas</h2>
         <p className="mb-4 text-gray-700 dark:text-gray-200">
