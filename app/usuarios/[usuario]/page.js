@@ -14,13 +14,18 @@ export default function UsuarioDetallePage() {
   useEffect(() => {
     setLoading(true);
     fetch(`/api/usuarios/${usuario}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Error al cargar el perfil');
+        }
+        return res.json();
+      })
       .then(data => {
         setData(data);
         setLoading(false);
       })
-      .catch(() => {
-        setError('Error al cargar el perfil');
+      .catch(err => {
+        setError(err.message);
         setLoading(false);
       });
   }, [usuario]);
@@ -47,17 +52,49 @@ export default function UsuarioDetallePage() {
           <span className="font-semibold">Biografía:</span> {user.Biografia || <span className="italic text-gray-400">Sin biografía</span>}
         </div>
       </div>
-      {/* SQL generado */}
-      {sql?.user && (
-        <div className="mb-6 bg-gray-100 dark:bg-zinc-900 p-4 rounded text-xs font-mono text-gray-700 dark:text-gray-200">
-          <span className="font-bold text-blue-700 dark:text-blue-400">SQL USADO:</span>
-          <pre className="whitespace-pre-wrap mt-2">{sql.user}</pre>
-        </div>
+
+      {/* SQL utilizado */}
+      {sql && (
+        <section className="mb-6 bg-gray-100 dark:bg-zinc-900 p-4 rounded-xl shadow">
+          <h2 className="text-xl font-bold mb-3 text-blue-600 dark:text-blue-400">Consultas SQL utilizadas:</h2>
+          <div className="space-y-4 text-sm font-mono text-gray-700 dark:text-gray-200 overflow-x-auto">
+            {sql.user && (
+              <div>
+                <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Datos del Usuario:</h3>
+                <pre className="whitespace-pre-wrap p-3 bg-gray-200 dark:bg-zinc-800 rounded">{sql.user}</pre>
+              </div>
+            )}
+            {sql.resenas && (
+              <div>
+                <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Reseñas:</h3>
+                <pre className="whitespace-pre-wrap p-3 bg-gray-200 dark:bg-zinc-800 rounded">{sql.resenas}</pre>
+              </div>
+            )}
+            {sql.listas && (
+              <div>
+                <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Listas Públicas:</h3>
+                <pre className="whitespace-pre-wrap p-3 bg-gray-200 dark:bg-zinc-800 rounded">{sql.listas}</pre>
+              </div>
+            )}
+            {sql.grupos && (
+              <div>
+                <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Grupos:</h3>
+                <pre className="whitespace-pre-wrap p-3 bg-gray-200 dark:bg-zinc-800 rounded">{sql.grupos}</pre>
+              </div>
+            )}
+            {sql.seguimientos && (
+              <div>
+                <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-1">Seguimiento de Contenido:</h3>
+                <pre className="whitespace-pre-wrap p-3 bg-gray-200 dark:bg-zinc-800 rounded">{sql.seguimientos}</pre>
+              </div>
+            )}
+          </div>
+        </section>
       )}
 
       {/* Reseñas */}
       <section>
-        <h2 className="text-2xl font-bold mb-4 text-blue-600">Reseñas</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">Reseñas</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {resenas.length === 0 ? (
             <div className="text-gray-500 col-span-full">No hay reseñas.</div>
@@ -76,7 +113,7 @@ export default function UsuarioDetallePage() {
 
       {/* Listas públicas */}
       <section>
-        <h2 className="text-2xl font-bold mb-4 text-blue-600">Listas públicas</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">Listas públicas</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {listas.length === 0 ? (
             <div className="text-gray-500 col-span-full">No hay listas públicas.</div>
@@ -99,7 +136,7 @@ export default function UsuarioDetallePage() {
 
       {/* Grupos */}
       <section>
-        <h2 className="text-2xl font-bold mb-4 text-blue-600">Grupos</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">Grupos</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {grupos.length === 0 ? (
             <div className="text-gray-500 col-span-full">No pertenece a ningún grupo.</div>
@@ -122,7 +159,7 @@ export default function UsuarioDetallePage() {
 
       {/* Seguimientos de contenido */}
       <section>
-        <h2 className="text-2xl font-bold mb-4 text-blue-600">Seguimiento de contenidos</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-400">Seguimiento de contenidos</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {seguimientos.length === 0 ? (
             <div className="text-gray-500 col-span-full">No hay seguimientos.</div>

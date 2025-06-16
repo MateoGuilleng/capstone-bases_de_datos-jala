@@ -12,9 +12,11 @@ export async function GET(req) {
 
   let query = `
     SELECT C.ID_Contenido, C.Titulo, C.Tipo, C.Ano, C.Clasificacion, C.Popularidad,
+      AVG(R.Puntuacion) AS PuntuacionPromedio,
       GROUP_CONCAT(DISTINCT G.Nombre ORDER BY G.Nombre ASC SEPARATOR ', ') AS Generos,
       GROUP_CONCAT(DISTINCT P.Nombre ORDER BY P.Nombre ASC SEPARATOR ', ') AS Plataformas
     FROM Contenidos C
+    LEFT JOIN Resenas R ON C.ID_Contenido = R.ID_Contenido
     LEFT JOIN contenido_genero CG ON C.ID_Contenido = CG.ID_Contenido
     LEFT JOIN generos G ON CG.ID_Genero = G.ID_Genero
     LEFT JOIN contenido_plataforma CP ON C.ID_Contenido = CP.ID_Contenido
@@ -49,6 +51,7 @@ export async function GET(req) {
       'Popularidad DESC', 'Popularidad ASC',
       'Ano DESC', 'Ano ASC',
       'Titulo ASC', 'Titulo DESC',
+      'PuntuacionPromedio DESC', 'PuntuacionPromedio ASC',
     ];
     if (validOrders.includes(orden)) {
       query += ` ORDER BY ${orden}`;

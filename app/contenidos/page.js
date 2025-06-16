@@ -19,6 +19,8 @@ const ORDENES = [
   { value: 'Ano ASC', label: 'Año (más antiguo)' },
   { value: 'Titulo ASC', label: 'Título (A-Z)' },
   { value: 'Titulo DESC', label: 'Título (Z-A)' },
+  { value: 'PuntuacionPromedio DESC', label: 'Calificación (mayor a menor)' },
+  { value: 'PuntuacionPromedio ASC', label: 'Calificación (menor a mayor)' },
 ];
 
 export default function ContenidosPage() {
@@ -225,6 +227,9 @@ export default function ContenidosPage() {
                 <span className="bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 px-2 py-1 rounded">{c.Ano}</span>
                 <span className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-2 py-1 rounded">{c.Clasificacion}</span>
                 <span className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">Popularidad: {c.Popularidad}</span>
+                {c.PuntuacionPromedio !== null && c.PuntuacionPromedio !== undefined && (
+                  <span className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">Calificación: {parseFloat(c.PuntuacionPromedio).toFixed(2)}</span>
+                )}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                 <strong>Géneros:</strong> {c.Generos ? c.Generos.split(', ').map(g => (
